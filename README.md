@@ -4,7 +4,6 @@
   <a href="https://www.npmjs.com/package/convertit"><img src="https://img.shields.io/npm/v/convertit.svg" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/convertit"><img src="https://img.shields.io/npm/dm/convertit.svg" alt="npm downloads"></a>
   <a href="https://github.com/suraj-9849/convertit"><img src="https://img.shields.io/github/stars/suraj-9849/convertit.svg?style=social" alt="GitHub stars"></a>
-  <a href="https://github.com/suraj-9849/convertit/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/convertit.svg" alt="license"></a>
 </p>
 
 <p align="center">
