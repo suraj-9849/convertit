@@ -18,8 +18,12 @@
   <a href="#features">Features</a> •
   <a href="#installation">Installation</a> •
   <a href="#quick-start">Quick Start</a> •
-  <a href="#excel-styling">Excel Styling</a> •
-  <a href="#api-reference">API</a> •
+  <a href="#extraction">Extraction</a> •
+  <a href="#analysis">Analysis</a> •
+  <a href="#search">Search</a> •
+  <a href="#batch-processing">Batch</a> •
+  <a href="#streaming">Streaming</a> •
+  <a href="#excel-styling">Excel</a> •
   <a href="#examples">Examples</a>
 </p>
 
@@ -27,16 +31,46 @@
 
 ## Features
 
+### File Conversion
+
 - **Multiple Format Support**: PDF, Word (DOCX), Excel (XLSX), CSV, HTML, JSON, XML, Markdown, and various image formats
 - **Simple API**: Convert files with just one line of code
 - **Builder Pattern**: Fluent API for complex conversions
 - **Excel Conditional Formatting**: Row colors, cell styles, data bars, color scales
+
+### Extraction & Content Analysis
+
+- **Extract Content**: Extract text, images, tables, links, annotations from PDFs, Word, Excel
+- **Document Analysis**: Analyze structure, content, style, security, accessibility, and quality
+- **Entity Recognition**: Extract emails, URLs, phone numbers, dates, amounts from documents
+- **Sentiment Analysis**: Detect sentiment and language from text content
+- **Metadata Extraction**: Pull EXIF, IPTC, XMP data from images
+- **Table Extraction**: Extract and structure table data from documents
+
+### Search & Indexing
+
+- **Full-Text Search**: Search across multiple documents with ranking
+- **Advanced Queries**: Boolean operators, fuzzy matching, regex support, phrase search
+- **Document Indexing**: Build inverted indexes for fast searching
+- **Relevance Scoring**: TF-IDF based ranking with context snippets
+- **Search Suggestions**: Fuzzy matching for typo tolerance
+
+### Batch & Streaming
+
+- **Batch Processing**: Process multiple files with configurable concurrency
+- **Stream Processing**: Memory-efficient chunked processing for large files
+- **Progress Tracking**: Real-time progress callbacks and statistics
+- **Retry Logic**: Automatic retries with exponential backoff
+- **Error Handling**: Comprehensive error handling with recovery options
+
+### Advanced Features
+
 - **Template Engine**: Built-in template processing for document generation
-- **Transformers**: Built-in support for compression, watermarks, merging, splitting, and rotation
+- **Transformers**: Compression, watermarks, merging, splitting, rotation
+- **Document Comparison**: Compare versions, track changes, similarity scoring
+- **Excel Conditional Formatting**: Row colors, cell styles, data bars, color scales
 - **Type-Safe**: Full TypeScript support with comprehensive type definitions
-- **Extensible**: Plugin system for custom converters
-- **Batch Processing**: Convert multiple files efficiently
-- **Progress Tracking**: Monitor conversion progress with callbacks
+- **Extensible**: Plugin system for custom converters and processors
 
 ## Installation
 
@@ -84,6 +118,187 @@ const buffer = await convertit
   .withCompression({ level: 'medium' })
   .toBuffer();
 ```
+
+## Extraction
+
+Extract content from documents without converting them:
+
+```typescript
+import { Convertit } from 'convertit';
+
+// Extract text from PDF
+const result = await Convertit.extract(pdfFile, 'pdf', {
+  extractText: true,
+  extractImages: true,
+  extractTables: true,
+  extractLinks: true,
+});
+
+console.log(result.data.text?.content);
+console.log(result.data.images?.length);
+console.log(result.data.tables);
+```
+
+### Supported Extractions
+
+- **Text**: Full text with formatting and positioning
+- **Images**: Images with metadata, EXIF data, and dimensions
+- **Tables**: Structured table data with headers and rows
+- **Links**: Hyperlinks with destinations and text
+- **Annotations**: Comments, highlights, notes
+- **Metadata**: Document properties, creation date, author
+- **Styles**: Font information, colors, formatting
+
+## Analysis
+
+Analyze document structure, content, and quality:
+
+```typescript
+import { Convertit } from 'convertit';
+
+// Analyze document
+const analysis = await Convertit.analyze(wordFile, 'word', {
+  analyzeStructure: true,
+  analyzeContent: true,
+  analyzeStyle: true,
+  generateSummary: true,
+  extractKeywords: true,
+  detectSentiment: true,
+});
+
+console.log(analysis.structure); // Sections, chapters, headings
+console.log(analysis.content); // Text stats, keywords, entities
+console.log(analysis.summary); // Abstract, key points, reading time
+```
+
+### Analysis Capabilities
+
+- **Structure**: Sections, chapters, headings, page breaks
+- **Content**: Text statistics, keyword extraction, entity recognition
+- **Style**: Font usage, colors, formatting consistency
+- **Security**: Encryption, permissions, macros, external links
+- **Accessibility**: WCAG compliance, alt text, reading order
+- **Quality**: Image quality, readability, formatting issues
+- **Comparison**: Compare versions and track changes
+
+## Search
+
+Search across multiple documents:
+
+```typescript
+import { Convertit } from 'convertit';
+
+// Create search engine
+const searchEngine = Convertit.createSearchEngine();
+
+// Index documents
+await searchEngine.index({
+  data: document1,
+  format: 'pdf',
+  name: 'doc1.pdf',
+});
+await searchEngine.index({
+  data: document2,
+  format: 'pdf',
+  name: 'doc2.pdf',
+});
+
+// Search with advanced options
+const results = await searchEngine.search('keyword', {
+  fuzzyMatch: true,
+  maxResults: 50,
+  includeContext: true,
+  highlightMatches: true,
+});
+
+results.hits.forEach(hit => {
+  console.log(`${hit.documentName}: ${hit.highlightedSnippet}`);
+});
+```
+
+### Search Features
+
+- **Full-Text Search**: Index and search across documents
+- **Fuzzy Matching**: Typo-tolerant search with configurable threshold
+- **Boolean Queries**: Support for +required and -excluded terms
+- **Phrase Search**: Find exact phrases with "quoted text"
+- **Regular Expressions**: Use /regex/ patterns in queries
+- **Context Snippets**: Get surrounding text for matches
+- **Highlighting**: HTML-highlighted results
+- **Ranking**: TF-IDF based relevance scoring
+
+## Batch-processing
+
+Process multiple files with concurrency control:
+
+```typescript
+import { Convertit } from 'convertit';
+
+// Extract from multiple files in parallel
+const { results, errors } = await Convertit.batchExtract(
+  [
+    { data: pdf1, format: 'pdf' },
+    { data: pdf2, format: 'pdf' },
+    { data: word1, format: 'word' },
+  ],
+  {
+    concurrency: 3,
+    retryAttempts: 2,
+    timeout: 30000,
+  }
+);
+
+console.log(`Processed: ${results.length}, Failed: ${errors.length}`);
+```
+
+### Batch Features
+
+- **Concurrent Processing**: Configurable concurrency limits
+- **Retry Logic**: Automatic retries with exponential backoff
+- **Progress Tracking**: Real-time progress callbacks
+- **Error Handling**: Graceful error handling with detailed error info
+- **Timeout Support**: Per-item timeout configuration
+- **Job Management**: Pause, resume, and cancel operations
+
+## Streaming
+
+Memory-efficient processing of large files:
+
+```typescript
+import { Convertit } from 'convertit';
+
+// Create stream processor
+const processor = await Convertit.createStreamProcessor({
+  chunkSize: 64 * 1024, // 64KB chunks
+  emitProgress: true,
+  progressInterval: 100,
+});
+
+// Handle streamed data
+processor.onData(chunk => {
+  console.log(`Received chunk: ${chunk.size} bytes`);
+});
+
+processor.onProgress(progress => {
+  console.log(`Progress: ${progress.percentage}% (${progress.rate} bytes/sec)`);
+});
+
+processor.onEnd(() => {
+  console.log('Streaming complete');
+});
+
+// Process large file
+await processor.process(largeFile, 'pdf');
+```
+
+### Streaming Features
+
+- **Chunked Processing**: Process large files in configurable chunks
+- **Backpressure Handling**: Automatic flow control
+- **Progress Events**: Real-time progress reporting
+- **Memory Efficient**: Constant memory usage regardless of file size
+- **Pipeline Builder**: Chain transformations in pipeline
+- **Pause/Resume**: Control stream processing flow
 
 ## Excel Styling
 

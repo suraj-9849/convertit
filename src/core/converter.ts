@@ -1,6 +1,6 @@
 /**
  * convertit - Main Converter Class
- * Core API for file conversion operations with builder pattern support.
+ * Core API for file conversion, extraction, analysis, and batch operations.
  */
 
 import type {
@@ -23,6 +23,11 @@ import type {
   HeaderFooterConfig,
   SplitConfig,
   TableConfig,
+  ExtractionResult,
+  AnalysisResult,
+  AnalysisOptions,
+  SearchOptions,
+  SearchResult,
 } from './types.js';
 import { ConvertFileError, ErrorCode, handleError } from './errors.js';
 import { BaseConverter, ConverterRegistry } from '../converters/base.js';
@@ -45,6 +50,7 @@ import {
   WatermarkTransformer,
   RotationTransformer,
 } from '../transformers/index.js';
+import { ExtractorRegistry, initializeExtractors } from '../extractors/index.js';
 import { validateOptions, validateInput, assertValid } from '../utils/validator.js';
 import {
   toBuffer,
@@ -61,6 +67,7 @@ export class Convertit {
   private data: InputDataType;
   private options: ConvertFileOptions;
   private static registry: ConverterRegistry = ConverterRegistry.getInstance();
+  private static extractorRegistry: ExtractorRegistry = initializeExtractors();
 
   constructor(data: InputDataType, options: ConvertFileOptions) {
     this.data = data;
@@ -92,6 +99,137 @@ export class Convertit {
       registry.register('bmp', new ImageConverter('bmp'));
       registry.register('tiff', new ImageConverter('tiff'));
     }
+  }
+
+  /**
+   * Extract content from a document
+   */
+  static async extract(
+    data: InputDataType,
+    format: FileFormat,
+    options: Record<string, unknown> = {}
+  ): Promise<ExtractionResult> {
+    const buffer = await toBuffer(data);
+    const extractor = Convertit.extractorRegistry.get(format);
+
+    if (!extractor) {
+      throw new ConvertFileError(
+        ErrorCode.UNSUPPORTED_FORMAT,
+        `No extractor available for format: ${format}`
+      );
+    }
+
+    return extractor.execute(buffer, options);
+  }
+
+  /**
+   * Analyze a document
+   */
+  static async analyze(
+    data: InputDataType,
+    format: FileFormat,
+    options: AnalysisOptions = {}
+  ): Promise<AnalysisResult> {
+    const { DocumentAnalyzer } = await import('../analysis/index.js');
+    const analyzer = new DocumentAnalyzer();
+    return analyzer.analyze(data, format, options);
+  }
+
+  /**
+   * Search within documents
+   */
+  static async search(
+    documents: Array<{ data: InputDataType; format: FileFormat; name?: string }>,
+    query: string,
+    options: Omit<SearchOptions, 'query'> = {}
+  ): Promise<SearchResult> {
+    const { SearchEngine } = await import('../search/index.js');
+    const engine = new SearchEngine();
+
+    // Index all documents
+    for (const doc of documents) {
+      await engine.indexDocument(doc.data, doc.format, { name: doc.name });
+    }
+
+    return engine.search(query, options);
+  }
+
+  /**
+   * Create a search engine instance for multiple searches
+   */
+  static async createSearchEngine(): Promise<{
+    index: (data: InputDataType, format: FileFormat, options?: { name?: string }) => Promise<void>;
+    search: (query: string, options?: Omit<SearchOptions, 'query'>) => SearchResult;
+    clear: () => void;
+  }> {
+    const { SearchEngine } = await import('../search/index.js');
+    const engine = new SearchEngine();
+
+    return {
+      index: async (data, format, options) => {
+        await engine.indexDocument(data, format, options);
+      },
+      search: (query, options) => engine.search(query, options),
+      clear: () => engine.clearIndex(),
+    };
+  }
+
+  /**
+   * Process documents in batch
+   */
+  static async batchExtract(
+    items: Array<{ data: InputDataType; format: FileFormat; options?: Record<string, unknown> }>,
+    config: { concurrency?: number; continueOnError?: boolean } = {}
+  ): Promise<{ results: ExtractionResult[]; errors: Error[] }> {
+    const { BatchProcessor } = await import('../batch/index.js');
+    const processor = new BatchProcessor({
+      maxConcurrentItems: config.concurrency || 5,
+    });
+
+    const job = processor.createJob('Batch Extraction', 'extraction', {
+      continueOnError: config.continueOnError ?? true,
+    } as any);
+
+    processor.addItems(
+      job.id,
+      items.map(item => ({
+        data: item.data,
+        inputFormat: item.format,
+        options: item.options,
+      }))
+    );
+
+    const result = await processor.startJob(job.id);
+
+    return {
+      results: (result.results || []) as unknown as ExtractionResult[],
+      errors:
+        result.errors?.map(
+          e => new Error(typeof e.error === 'string' ? e.error : String(e.error))
+        ) || [],
+    };
+  }
+
+  /**
+   * Create a stream processor for large files
+   */
+  static async createStreamProcessor(options: { chunkSize?: number } = {}): Promise<{
+    process: (data: InputDataType, format: FileFormat) => Promise<void>;
+    onData: (callback: (chunk: unknown) => void) => void;
+    onEnd: (callback: () => void) => void;
+    onError: (callback: (error: Error) => void) => void;
+  }> {
+    const { StreamProcessor } = await import('../streaming/index.js');
+    const processor = new StreamProcessor(options);
+
+    return {
+      process: async (data, format) => {
+        await processor.processStream(data, format);
+      },
+      onData: callback => processor.on('data', callback),
+      onEnd: callback => processor.on('end', callback),
+      onError: callback => processor.on('error', callback),
+    };
   }
 
   async convert(): Promise<ConversionResult> {

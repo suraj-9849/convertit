@@ -1,8 +1,8 @@
 {
   "name": "convertit",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "type": "module",
-  "description": "Convert it! The ultimate file conversion toolkit. Create PDFs, Word docs, Excel spreadsheets, and more with a simple, chainable API.",
+  "description": "Convert it! The ultimate file conversion toolkit. Convert, extract, analyze, search, and process PDFs, Word docs, Excel spreadsheets, images, and more with a powerful, chainable API. Supports batch processing, streaming, and intelligent document analysis.",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,6 +16,31 @@
       "import": "./dist/converters/index.js",
       "require": "./dist/converters/index.js",
       "types": "./dist/converters/index.d.ts"
+    },
+    "./extractors": {
+      "import": "./dist/extractors/index.js",
+      "require": "./dist/extractors/index.js",
+      "types": "./dist/extractors/index.d.ts"
+    },
+    "./analysis": {
+      "import": "./dist/analysis/index.js",
+      "require": "./dist/analysis/index.js",
+      "types": "./dist/analysis/index.d.ts"
+    },
+    "./search": {
+      "import": "./dist/search/index.js",
+      "require": "./dist/search/index.js",
+      "types": "./dist/search/index.d.ts"
+    },
+    "./batch": {
+      "import": "./dist/batch/index.js",
+      "require": "./dist/batch/index.js",
+      "types": "./dist/batch/index.d.ts"
+    },
+    "./streaming": {
+      "import": "./dist/streaming/index.js",
+      "require": "./dist/streaming/index.js",
+      "types": "./dist/streaming/index.d.ts"
     },
     "./transformers": {
       "import": "./dist/transformers/index.js",
@@ -74,7 +99,20 @@
     "convertit",
     "document-generator",
     "pdf-generator",
-    "excel-generator"
+    "excel-generator",
+    "extractor",
+    "text-extraction",
+    "image-extraction",
+    "metadata-extraction",
+    "document-analysis",
+    "document-search",
+    "full-text-search",
+    "batch-processing",
+    "streaming",
+    "nlp",
+    "ocr",
+    "parser",
+    "reader"
   ],
   "author": "suraj-9849",
   "license": "MIT",
