@@ -4,7 +4,6 @@
  */
 
 export { Convertit, ConvertitBuilder } from './core/converter';
-
 export type {
   FileFormat,
   InputDataType,
