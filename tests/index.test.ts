@@ -11,10 +11,9 @@ import Convertit, {
   JSONConverter,
   XMLConverter,
   MarkdownConverter,
-  PDFManipulator,
-  ExcelUtils,
-  CSVUtils,
-  ImageUtils,
+  ExcelExtractorUtils,
+  CSVExtractorUtils,
+  ImageExtractorUtils,
   validateOptions,
   validateInput,
   isValidFormat,
@@ -362,17 +361,27 @@ describe('Utility Functions', () => {
 });
 
 describe('CSV Utils', () => {
-  test('should parse CSV string', () => {
-    const csv = 'name,age\nsuraj,30\nsathya,25';
-    const result = CSVUtils.parse(csv);
-    expect(result).toHaveLength(2);
-    expect(result[0].name).toBe('suraj');
+  test('should infer schema from records', () => {
+    const records = [
+      { name: 'suraj', age: 30 },
+      { name: 'sathya', age: 25 },
+    ];
+    const schema = CSVExtractorUtils.inferSchema(records);
+    expect(schema.name).toBeDefined();
+    expect(schema.age).toBeDefined();
+    expect(schema.name.type).toBe('string');
+    expect(schema.age.type).toBe('number');
   });
 
-  test('should get headers', () => {
-    const csv = 'name,age,email\nsuraj,30,suraj@test.com';
-    const headers = CSVUtils.getHeaders(csv);
-    expect(headers).toEqual(['name', 'age', 'email']);
+  test('should find duplicates in records', () => {
+    const records = [
+      { name: 'suraj', age: 30 },
+      { name: 'suraj', age: 30 },
+      { name: 'sathya', age: 25 },
+    ];
+    const result = CSVExtractorUtils.findDuplicates(records);
+    expect(result.duplicateCount).toBe(1);
+    expect(result.uniqueCount).toBe(2);
   });
 });
 
