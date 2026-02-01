@@ -3,9 +3,9 @@
  */
 
 import sharp from 'sharp';
-import { BaseConverter } from './base';
-import type { InputDataType, ConvertFileOptions, FileFormat, ImageOptions } from '../core/types';
-import { ConvertFileError, ErrorCode } from '../core/errors';
+import { BaseConverter } from './base.js';
+import type { InputDataType, ConvertFileOptions, FileFormat, ImageOptions } from '../core/types.js';
+import { ConvertFileError, ErrorCode } from '../core/errors.js';
 
 export class ImageConverter extends BaseConverter {
   private targetFormat: FileFormat;

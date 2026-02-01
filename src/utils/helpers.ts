@@ -3,8 +3,14 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import type { FileFormat, InputDataType, PageSize, PageMargins, FontConfig } from '../core/types';
-import { ValidationError, ConvertFileError, ErrorCode } from '../core/errors';
+import type {
+  FileFormat,
+  InputDataType,
+  PageSize,
+  PageMargins,
+  FontConfig,
+} from '../core/types.js';
+import { ValidationError, ConvertFileError, ErrorCode } from '../core/errors.js';
 
 export function generateId(): string {
   return uuidv4();

@@ -20,7 +20,7 @@ import {
   convertInchesToTwip,
   PageOrientation,
 } from 'docx';
-import { BaseConverter } from './base';
+import { BaseConverter } from './base.js';
 import type {
   InputDataType,
   ConvertFileOptions,
@@ -28,9 +28,9 @@ import type {
   WordOptions,
   FontConfig,
   HeaderFooterConfig,
-} from '../core/types';
-import { ConvertFileError, ErrorCode } from '../core/errors';
-import { mergeMargins, mergeFont, getPageSize } from '../utils/helpers';
+} from '../core/types.js';
+import { ConvertFileError, ErrorCode } from '../core/errors.js';
+import { mergeMargins, mergeFont, getPageSize } from '../utils/helpers.js';
 
 export class WordConverter extends BaseConverter {
   constructor() {
@@ -139,6 +139,7 @@ export class WordConverter extends BaseConverter {
     return await Packer.toBuffer(doc);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async createFromArray(data: any[], wordOptions: WordOptions): Promise<Buffer> {
     if (data.length === 0) {
       return this.createFromText('Empty data', wordOptions);
@@ -251,6 +252,7 @@ export class WordConverter extends BaseConverter {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async createFromTableData(data: any[], wordOptions: WordOptions): Promise<Buffer> {
     const font = mergeFont(wordOptions.font);
     const headers = Object.keys(data[0]);

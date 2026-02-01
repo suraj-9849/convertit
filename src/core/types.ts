@@ -155,6 +155,7 @@ export interface OCRConfig {
 
 export interface TableConfig {
   headers?: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[][];
   style?: {
     headerBackground?: string;
@@ -224,6 +225,7 @@ export interface ExcelOptions {
   sheetName?: string;
   sheets?: Array<{
     name: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any[][];
     headers?: string[];
   }>;
@@ -305,7 +307,9 @@ export interface RowStyleRule {
     | { type: 'odd' }
     | { type: 'every'; n: number; offset?: number }
     | { type: 'range'; start: number; end: number }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | { type: 'custom'; predicate: (rowData: any[], rowIndex: number) => boolean }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | { type: 'columnValue'; column: string | number; operator: ComparisonOperator; value: any };
   style: CellStyle;
 }
@@ -314,6 +318,7 @@ export interface CellStyleRule {
   target: string;
   condition?: {
     operator: ComparisonOperator;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     value: any;
   };
   style: CellStyle;
@@ -511,6 +516,7 @@ export interface ProgressInfo {
 export interface ConversionError {
   code: string;
   message: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   details?: any;
   file?: string;
   recoverable: boolean;
@@ -552,6 +558,7 @@ export interface ConverterPlugin {
 export interface TransformerPlugin {
   name: string;
   version: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transform(result: ConversionResult, options: any): Promise<ConversionResult>;
 }
 
@@ -568,6 +575,7 @@ export interface TemplateConfig {
   /** Partials/components */
   partials?: Record<string, string>;
   /** Helper functions */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   helpers?: Record<string, (...args: any[]) => any>;
   /** Custom delimiters */
   delimiters?: [string, string];
@@ -767,10 +775,12 @@ export interface DataValidationRule {
   /** Validation type */
   type: 'required' | 'email' | 'url' | 'number' | 'date' | 'regex' | 'custom' | 'list';
   /** List of allowed values (for list type) */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   allowedValues?: any[];
   /** Regex pattern (for regex type) */
   pattern?: string | RegExp;
   /** Custom validation function */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   validator?: (value: any) => boolean;
   /** Min value (for number/date) */
   min?: number | Date;

@@ -3,17 +3,19 @@
  */
 
 import PDFDocument from 'pdfkit';
-import { PDFDocument as PDFLib, rgb, StandardFonts, degrees } from 'pdf-lib';
-import { BaseConverter } from './base';
+import { PDFDocument as PDFLib, PDFPage, rgb, StandardFonts, degrees } from 'pdf-lib';
+import { BaseConverter } from './base.js';
 import type {
   InputDataType,
   ConvertFileOptions,
   FileFormat,
   PDFOptions,
   PageSize,
-} from '../core/types';
-import { ConvertFileError, ErrorCode } from '../core/errors';
-import { getPageSize, mergeMargins, mergeFont, parseColor } from '../utils/helpers';
+  PageMargins,
+  PageNumberConfig,
+} from '../core/types.js';
+import { ConvertFileError, ErrorCode } from '../core/errors.js';
+import { getPageSize, mergeMargins, mergeFont, parseColor } from '../utils/helpers.js';
 
 export class PDFConverter extends BaseConverter {
   constructor() {
@@ -242,7 +244,7 @@ export class PDFConverter extends BaseConverter {
     doc: PDFKit.PDFDocument,
     headers: string[],
     data: string[][],
-    margins: any,
+    margins: PageMargins,
     pageSize: PageSize
   ): void {
     const tableWidth = pageSize.width - margins.left - margins.right;
@@ -293,7 +295,7 @@ export class PDFConverter extends BaseConverter {
     doc: PDFKit.PDFDocument,
     content: string,
     pageSize: PageSize,
-    margins: any
+    margins: PageMargins
   ): void {
     const originalY = doc.y;
     doc.y = margins.top / 2;
@@ -310,7 +312,7 @@ export class PDFConverter extends BaseConverter {
     doc: PDFKit.PDFDocument,
     content: string,
     pageSize: PageSize,
-    margins: any
+    margins: PageMargins
   ): void {
     const originalY = doc.y;
     doc.y = pageSize.height - margins.bottom / 2;
@@ -323,7 +325,7 @@ export class PDFConverter extends BaseConverter {
     doc.fontSize(12);
   }
 
-  private addPageNumbers(doc: PDFKit.PDFDocument, config: any): void {
+  private addPageNumbers(doc: PDFKit.PDFDocument, config: PageNumberConfig): void {
     const pages = doc.bufferedPageRange();
     for (let i = 0; i < pages.count; i++) {
       doc.switchToPage(i);
@@ -371,7 +373,7 @@ export class PDFManipulator {
       try {
         const pdf = await PDFLib.load(file);
         const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-        pages.forEach(page => mergedPdf.addPage(page));
+        pages.forEach((page: PDFPage) => mergedPdf.addPage(page));
       } catch (error) {
         throw new ConvertFileError(
           ErrorCode.MERGE_FAILED,
@@ -437,7 +439,7 @@ export class PDFManipulator {
           (_, i) => range.start - 1 + i
         );
         const copiedPages = await newPdf.copyPages(sourcePdf, pageIndices);
-        copiedPages.forEach(page => newPdf.addPage(page));
+        copiedPages.forEach((page: PDFPage) => newPdf.addPage(page));
         results.push(Buffer.from(await newPdf.save()));
       }
     } catch (error) {
@@ -511,7 +513,7 @@ export class PDFManipulator {
       const pages = pdfDoc.getPages();
 
       const pagesToRotate = pageNumbers
-        ? pages.filter((_, i) => pageNumbers.includes(i + 1))
+        ? pages.filter((_: PDFPage, i: number) => pageNumbers.includes(i + 1))
         : pages;
 
       for (const page of pagesToRotate) {
@@ -545,7 +547,7 @@ export class PDFManipulator {
 
       const pageIndices = pageNumbers.map(p => p - 1);
       const copiedPages = await newPdf.copyPages(sourcePdf, pageIndices);
-      copiedPages.forEach(page => newPdf.addPage(page));
+      copiedPages.forEach((page: PDFPage) => newPdf.addPage(page));
 
       return Buffer.from(await newPdf.save());
     } catch (error) {

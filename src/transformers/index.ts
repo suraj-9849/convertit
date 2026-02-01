@@ -10,12 +10,12 @@ import type {
   MergeConfig,
   SplitConfig,
   RotateConfig,
-} from '../core/types';
-import { ConvertFileError, ErrorCode } from '../core/errors';
-import { PDFManipulator } from '../converters/pdf';
-import { ExcelUtils } from '../converters/excel';
-import { CSVUtils } from '../converters/csv';
-import { ImageUtils } from '../converters/image';
+} from '../core/types.js';
+import { ConvertFileError, ErrorCode } from '../core/errors.js';
+import { PDFManipulator } from '../converters/pdf.js';
+import { ExcelUtils } from '../converters/excel.js';
+import { CSVUtils } from '../converters/csv.js';
+import { ImageUtils } from '../converters/image.js';
 import sharp from 'sharp';
 
 /**
@@ -324,6 +324,7 @@ export class EncryptionTransformer {
  * Adds page numbers to documents
  */
 export class PageNumberTransformer {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static async addPageNumbers(data: Buffer, format: string, _config: any): Promise<Buffer> {
     switch (format) {
       case 'pdf':

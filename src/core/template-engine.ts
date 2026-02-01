@@ -2,16 +2,18 @@
  * Template engine for document generation with variables, conditionals, and loops.
  */
 
-import type { TemplateConfig } from '../core/types';
+import type { TemplateConfig } from '../core/types.js';
 
 export class TemplateEngine {
   private delimiters: [string, string];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private helpers: Record<string, (...args: any[]) => any>;
   private partials: Record<string, string>;
 
   constructor(config?: Partial<TemplateConfig>) {
     this.delimiters = config?.delimiters || ['{{', '}}'];
-    this.helpers = config?.helpers || {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.helpers = (config?.helpers || {}) as Record<string, (...args: any[]) => any>;
     this.partials = config?.partials || {};
     this.registerBuiltInHelpers();
   }
@@ -58,16 +60,16 @@ export class TemplateEngine {
       if (String(str).length <= length) return str;
       return String(str).substring(0, length) + suffix;
     };
-    this.helpers['default'] = (value: any, defaultValue: any) => {
+    this.helpers['default'] = (value: unknown, defaultValue: unknown) => {
       return value !== null && value !== undefined && value !== '' ? value : defaultValue;
     };
-    this.helpers['json'] = (obj: any, pretty = false) => {
+    this.helpers['json'] = (obj: unknown, pretty = false) => {
       return pretty ? JSON.stringify(obj, null, 2) : JSON.stringify(obj);
     };
-    this.helpers['join'] = (arr: any[], separator = ', ') => {
+    this.helpers['join'] = (arr: unknown[], separator = ', ') => {
       return Array.isArray(arr) ? arr.join(separator) : String(arr);
     };
-    this.helpers['length'] = (arr: any[]) => {
+    this.helpers['length'] = (arr: unknown[]) => {
       return Array.isArray(arr) ? arr.length : 0;
     };
 
@@ -81,17 +83,18 @@ export class TemplateEngine {
       return Math.round(Number(num) * factor) / factor;
     };
 
-    this.helpers['eq'] = (a: any, b: any) => a === b;
-    this.helpers['ne'] = (a: any, b: any) => a !== b;
-    this.helpers['gt'] = (a: any, b: any) => a > b;
-    this.helpers['gte'] = (a: any, b: any) => a >= b;
-    this.helpers['lt'] = (a: any, b: any) => a < b;
-    this.helpers['lte'] = (a: any, b: any) => a <= b;
-    this.helpers['and'] = (...args: any[]) => args.every(Boolean);
-    this.helpers['or'] = (...args: any[]) => args.some(Boolean);
-    this.helpers['not'] = (value: any) => !value;
+    this.helpers['eq'] = (a: unknown, b: unknown) => a === b;
+    this.helpers['ne'] = (a: unknown, b: unknown) => a !== b;
+    this.helpers['gt'] = (a: unknown, b: unknown) => (a as number) > (b as number);
+    this.helpers['gte'] = (a: unknown, b: unknown) => (a as number) >= (b as number);
+    this.helpers['lt'] = (a: unknown, b: unknown) => (a as number) < (b as number);
+    this.helpers['lte'] = (a: unknown, b: unknown) => (a as number) <= (b as number);
+    this.helpers['and'] = (...args: unknown[]) => args.every(Boolean);
+    this.helpers['or'] = (...args: unknown[]) => args.some(Boolean);
+    this.helpers['not'] = (value: unknown) => !value;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   registerHelper(name: string, fn: (...args: any[]) => any): void {
     this.helpers[name] = fn;
   }
@@ -248,10 +251,12 @@ export class TemplateEngine {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private resolvePath(path: string, data: Record<string, any>): any {
     if (path === 'this') return data.this || data;
 
     const parts = path.split('.');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let current: any = data;
 
     for (const part of parts) {
@@ -300,6 +305,7 @@ export class TemplateEngine {
   /**
    * Resolve a value (could be a path or literal)
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private resolveValue(expr: string, data: Record<string, any>): any {
     // Check for string literal
     const stringMatch = expr.match(/^["'](.*)["']$/);
@@ -322,7 +328,9 @@ export class TemplateEngine {
   /**
    * Parse helper arguments
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private parseHelperArgs(argsStr: string, data: Record<string, any>): any[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const args: any[] = [];
     const tokens = this.tokenizeArgs(argsStr);
 

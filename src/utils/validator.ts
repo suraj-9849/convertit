@@ -17,8 +17,8 @@ import type {
   CompressionConfig,
   MergeConfig,
   SplitConfig,
-} from '../core/types';
-import { ValidationError } from '../core/errors';
+} from '../core/types.js';
+import { ValidationError } from '../core/errors.js';
 
 const SUPPORTED_FORMATS: FileFormat[] = [
   'pdf',

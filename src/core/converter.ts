@@ -23,9 +23,9 @@ import type {
   HeaderFooterConfig,
   SplitConfig,
   TableConfig,
-} from './types';
-import { ConvertFileError, ErrorCode, handleError } from './errors';
-import { BaseConverter, ConverterRegistry } from '../converters/base';
+} from './types.js';
+import { ConvertFileError, ErrorCode, handleError } from './errors.js';
+import { BaseConverter, ConverterRegistry } from '../converters/base.js';
 import {
   PDFConverter,
   WordConverter,
@@ -37,15 +37,15 @@ import {
   JSONConverter,
   XMLConverter,
   MarkdownConverter,
-} from '../converters';
+} from '../converters/index.js';
 import {
   CompressionTransformer,
   MergeTransformer,
   SplitTransformer,
   WatermarkTransformer,
   RotationTransformer,
-} from '../transformers';
-import { validateOptions, validateInput, assertValid } from '../utils/validator';
+} from '../transformers/index.js';
+import { validateOptions, validateInput, assertValid } from '../utils/validator.js';
 import {
   toBuffer,
   getMimeType,
@@ -54,7 +54,7 @@ import {
   withTimeout,
   retry,
   normalizeFormat,
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 import { writeFile } from 'fs/promises';
 
 export class Convertit {
@@ -204,7 +204,12 @@ export class Convertit {
 
       case 'blob':
         if (typeof Blob !== 'undefined') {
-          result.data = new Blob([result.data as Buffer], { type: result.mimeType }) as any;
+          const buffer = result.data as Buffer;
+          const arrayBuffer = buffer.buffer.slice(
+            buffer.byteOffset,
+            buffer.byteOffset + buffer.byteLength
+          ) as ArrayBuffer;
+          result.data = new Blob([new Uint8Array(arrayBuffer)], { type: result.mimeType }) as any;
         }
         break;
 

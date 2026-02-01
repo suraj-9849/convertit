@@ -2,10 +2,10 @@
  * HTML converter with tables, styling, and markdown support.
  */
 
-import { BaseConverter } from './base';
-import type { InputDataType, ConvertFileOptions, FileFormat, HTMLOptions } from '../core/types';
-import { ConvertFileError, ErrorCode } from '../core/errors';
-import { escapeHtml } from '../utils/helpers';
+import { BaseConverter } from './base.js';
+import type { InputDataType, ConvertFileOptions, FileFormat, HTMLOptions } from '../core/types.js';
+import { ConvertFileError, ErrorCode } from '../core/errors.js';
+import { escapeHtml } from '../utils/helpers.js';
 
 export class HTMLConverter extends BaseConverter {
   constructor() {
@@ -113,6 +113,7 @@ export class HTMLConverter extends BaseConverter {
     return Buffer.from(htmlOptions.minify ? this.minifyHtml(finalHtml) : finalHtml, encoding);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async createFromArray(data: any[], htmlOptions: HTMLOptions): Promise<Buffer> {
     const encoding: BufferEncoding = htmlOptions.encoding || 'utf-8';
     if (data.length === 0) {
@@ -141,6 +142,7 @@ export class HTMLConverter extends BaseConverter {
     return Buffer.from(htmlOptions.minify ? this.minifyHtml(html) : html, encoding);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private createTable(data: any[], htmlOptions: HTMLOptions): Buffer {
     const headers = Object.keys(data[0]);
 

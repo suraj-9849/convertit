@@ -1,6 +1,6 @@
 {
   "name": "convertit",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "type": "module",
   "description": "Convert it! The ultimate file conversion toolkit. Create PDFs, Word docs, Excel spreadsheets, and more with a simple, chainable API.",
   "main": "dist/index.js",
@@ -111,7 +111,7 @@
     "convertit": "^1.0.1",
     "csv-parse": "^5.5.2",
     "csv-stringify": "^6.4.4",
-    "docx": "^8.5.0",
+    "docx": "^9.5.1",
     "exceljs": "^4.4.0",
     "jszip": "^3.10.1",
     "mammoth": "^1.6.0",

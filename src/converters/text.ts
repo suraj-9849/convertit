@@ -2,8 +2,8 @@
  * Text, JSON, and XML converters.
  */
 
-import { BaseConverter } from './base';
-import type { InputDataType, ConvertFileOptions, FileFormat } from '../core/types';
+import { BaseConverter } from './base.js';
+import type { InputDataType, ConvertFileOptions, FileFormat } from '../core/types.js';
 
 export class TextConverter extends BaseConverter {
   constructor() {
@@ -38,6 +38,7 @@ export class TextConverter extends BaseConverter {
     return Buffer.from(text, 'utf-8');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private arrayToText(data: any[], indent: number = 0): string {
     const prefix = '  '.repeat(indent);
     return data
@@ -82,6 +83,7 @@ export class JSONConverter extends BaseConverter {
   }
 
   async convert(data: InputDataType, _options: ConvertFileOptions): Promise<Buffer> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let jsonData: any;
 
     if (typeof data === 'string') {
@@ -117,6 +119,7 @@ export class XMLConverter extends BaseConverter {
   }
 
   async convert(data: InputDataType, _options: ConvertFileOptions): Promise<Buffer> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let obj: any;
 
     if (typeof data === 'string') {
@@ -143,6 +146,7 @@ export class XMLConverter extends BaseConverter {
     return Buffer.from(formatted, 'utf-8');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private objectToXml(obj: any, rootName: string, indent: number = 0): string {
     const prefix = '  '.repeat(indent);
 
@@ -292,6 +296,7 @@ export class MarkdownConverter extends BaseConverter {
     return md;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private arrayToMarkdown(data: any[]): string {
     if (data.length === 0) return '';
 

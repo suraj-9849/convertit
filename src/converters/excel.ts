@@ -3,10 +3,10 @@
  */
 
 import ExcelJS from 'exceljs';
-import { BaseConverter } from './base';
-import type { InputDataType, ConvertFileOptions, FileFormat, ExcelOptions } from '../core/types';
-import { ConvertFileError, ErrorCode } from '../core/errors';
-import { ExcelStyleEngine } from './excel-styles';
+import { BaseConverter } from './base.js';
+import type { InputDataType, ConvertFileOptions, FileFormat, ExcelOptions } from '../core/types.js';
+import { ConvertFileError, ErrorCode } from '../core/errors.js';
+import { ExcelStyleEngine } from './excel-styles.js';
 
 export class ExcelConverter extends BaseConverter {
   constructor() {
@@ -41,6 +41,7 @@ export class ExcelConverter extends BaseConverter {
     throw new ConvertFileError(ErrorCode.INVALID_INPUT, 'Unable to convert input data to Excel');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async createFromArray(data: any[], excelOptions: ExcelOptions): Promise<Buffer> {
     const workbook = new ExcelJS.Workbook();
 
@@ -138,6 +139,7 @@ export class ExcelConverter extends BaseConverter {
   private async createSheet(
     workbook: ExcelJS.Workbook,
     sheetName: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any[],
     options: ExcelOptions
   ): Promise<void> {
@@ -328,10 +330,12 @@ export class ExcelUtils {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(file as unknown as ExcelJS.Buffer);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result: any[][] = [];
     const worksheet = workbook.worksheets[0];
 
     worksheet?.eachRow(row => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const rowData: any[] = [];
       row.eachCell({ includeEmpty: true }, cell => {
         rowData.push(cell.value);

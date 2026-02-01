@@ -8,9 +8,9 @@ import type {
   ConversionResult,
   FileFormat,
   ProgressInfo,
-} from '../core/types';
-import { ConvertFileError, ErrorCode } from '../core/errors';
-import { getMimeType, generateFilename, getFileSize, measureDuration } from '../utils/helpers';
+} from '../core/types.js';
+import { ConvertFileError, ErrorCode } from '../core/errors.js';
+import { getMimeType, generateFilename, getFileSize, measureDuration } from '../utils/helpers.js';
 
 export abstract class BaseConverter {
   protected readonly format: FileFormat;

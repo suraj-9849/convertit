@@ -3,5 +3,5 @@
  * Export all utility functions
  */
 
-export * from './helpers';
-export * from './validator';
+export * from './helpers.js';
+export * from './validator.js';

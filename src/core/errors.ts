@@ -38,6 +38,7 @@ export enum ErrorCode {
 
 export class ConvertFileError extends Error {
   public readonly code: ErrorCode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public readonly details?: any;
   public readonly recoverable: boolean;
   public readonly timestamp: Date;
@@ -47,6 +48,7 @@ export class ConvertFileError extends Error {
     code: ErrorCode,
     message: string,
     options?: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       details?: any;
       recoverable?: boolean;
       file?: string;
@@ -90,6 +92,7 @@ export class ConvertFileError extends Error {
 }
 
 export class ValidationError extends ConvertFileError {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(message: string, details?: any) {
     super(ErrorCode.INVALID_INPUT, message, { details, recoverable: true });
     this.name = 'ValidationError';

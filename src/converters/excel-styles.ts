@@ -2,7 +2,7 @@
  * Excel styling engine for conditional formatting, row styles, and cell styles.
  */
 
-import type ExcelJS from 'exceljs';
+import type { Worksheet, Cell } from 'exceljs';
 import type {
   ExcelOptions,
   ConditionalFormattingRule,
@@ -10,14 +10,16 @@ import type {
   CellStyleRule,
   CellStyle,
   ComparisonOperator,
-} from '../core/types';
+} from '../core/types.js';
 
 export class ExcelStyleEngine {
-  private worksheet: ExcelJS.Worksheet;
+  private worksheet: Worksheet;
   private options: ExcelOptions;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private data: any[];
 
-  constructor(worksheet: ExcelJS.Worksheet, options: ExcelOptions, data: any[]) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(worksheet: Worksheet, options: ExcelOptions, data: any[]) {
     this.worksheet = worksheet;
     this.options = options;
     this.data = data;
@@ -53,6 +55,7 @@ export class ExcelStyleEngine {
 
   private evaluateRowCondition(
     condition: RowStyleRule['condition'],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rowData: any,
     rowIndex: number
   ): boolean {
@@ -79,7 +82,9 @@ export class ExcelStyleEngine {
   }
 
   private evaluateColumnCondition(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rowData: any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     condition: { column: string | number; operator: ComparisonOperator; value: any }
   ): boolean {
     const cellValue =
@@ -92,6 +97,7 @@ export class ExcelStyleEngine {
     return this.compareValues(cellValue, condition.operator, condition.value);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private compareValues(cellValue: any, operator: ComparisonOperator, compareValue: any): boolean {
     // Handle null/undefined
     if (cellValue === null || cellValue === undefined) {
@@ -234,6 +240,7 @@ export class ExcelStyleEngine {
   }
 
   private evaluateCellCondition(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     value: any,
     condition: NonNullable<ConditionalFormattingRule['condition']>
   ): boolean {
@@ -242,7 +249,7 @@ export class ExcelStyleEngine {
     return this.compareValues(value, condition.operator as ComparisonOperator, condition.value);
   }
 
-  private applyCellStyle(cell: ExcelJS.Cell, style: CellStyle): void {
+  private applyCellStyle(cell: Cell, style: CellStyle): void {
     // Apply font
     if (style.font) {
       cell.font = {
@@ -448,6 +455,7 @@ export function createRowStyleRules(
     condition:
       | 'even'
       | 'odd'
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       | { column: string | number; operator: ComparisonOperator; value: any };
     style: CellStyle;
   }>

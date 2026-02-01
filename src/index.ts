@@ -3,7 +3,7 @@
  * Convert between PDF, Word, Excel, CSV, HTML, images and more.
  */
 
-export { Convertit, ConvertitBuilder } from './core/converter';
+export { Convertit, ConvertitBuilder } from './core/converter.js';
 export type {
   FileFormat,
   InputDataType,
@@ -46,9 +46,9 @@ export type {
   RequiredFields,
   FileExtension,
   FileInfo,
-} from './core/types';
+} from './core/types.js';
 
-export { MIME_TYPES, DEFAULT_PAGE_SIZES, DEFAULT_MARGINS, DEFAULT_FONT } from './core/types';
+export { MIME_TYPES, DEFAULT_PAGE_SIZES, DEFAULT_MARGINS, DEFAULT_FONT } from './core/types.js';
 
 export {
   ConvertFileError,
@@ -60,7 +60,7 @@ export {
   ErrorCode,
   isConvertFileError,
   handleError,
-} from './core/errors';
+} from './core/errors.js';
 
 export {
   BaseConverter,
@@ -81,9 +81,9 @@ export {
   JSONConverter,
   XMLConverter,
   MarkdownConverter,
-} from './converters';
+} from './converters/index.js';
 
-export { TemplateEngine, DocumentTemplates } from './core/template-engine';
+export { TemplateEngine, DocumentTemplates } from './core/template-engine.js';
 
 export {
   CompressionTransformer,
@@ -93,7 +93,7 @@ export {
   RotationTransformer,
   EncryptionTransformer,
   PageNumberTransformer,
-} from './transformers';
+} from './transformers/index.js';
 
 export {
   generateId,
@@ -133,7 +133,7 @@ export {
   isBrowser,
   timestamp,
   measureDuration,
-} from './utils/helpers';
+} from './utils/helpers.js';
 
 export {
   validateOptions,
@@ -142,7 +142,7 @@ export {
   canConvert,
   assertValid,
   type ValidationResult,
-} from './utils/validator';
+} from './utils/validator.js';
 
-import { Convertit } from './core/converter';
+import { Convertit } from './core/converter.js';
 export default Convertit;

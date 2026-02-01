@@ -4,9 +4,9 @@
 
 import { stringify } from 'csv-stringify/sync';
 import { parse } from 'csv-parse/sync';
-import { BaseConverter } from './base';
-import type { InputDataType, ConvertFileOptions, FileFormat, CSVOptions } from '../core/types';
-import { ConvertFileError, ErrorCode } from '../core/errors';
+import { BaseConverter } from './base.js';
+import type { InputDataType, ConvertFileOptions, FileFormat, CSVOptions } from '../core/types.js';
+import { ConvertFileError, ErrorCode } from '../core/errors.js';
 
 export class CSVConverter extends BaseConverter {
   constructor() {
@@ -41,11 +41,13 @@ export class CSVConverter extends BaseConverter {
     throw new ConvertFileError(ErrorCode.INVALID_INPUT, 'Unable to convert input data to CSV');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async createFromArray(data: any[], csvOptions: CSVOptions): Promise<Buffer> {
     if (data.length === 0) {
       return Buffer.from('');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let records: any[][];
     let headers: string[] | undefined;
 
@@ -73,6 +75,7 @@ export class CSVConverter extends BaseConverter {
     } else if (Array.isArray(data[0])) {
       // Array of arrays
       records = data.map(row =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         row.map((cell: any) => {
           if (cell === null || cell === undefined) return '';
           if (typeof cell === 'object') return JSON.stringify(cell);
@@ -228,6 +231,7 @@ export class CSVUtils {
       skipEmptyLines?: boolean;
       trim?: boolean;
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): any[][] {
     const csvContent = Buffer.isBuffer(content) ? content.toString('utf-8') : content;
 
@@ -310,6 +314,7 @@ export class CSVUtils {
   static filter(
     content: string | Buffer,
     column: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     predicate: (value: any) => boolean,
     options?: { delimiter?: string }
   ): Record<string, any>[] {
